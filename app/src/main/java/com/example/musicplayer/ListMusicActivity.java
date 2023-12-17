@@ -17,11 +17,26 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import android.Manifest;
 
+/**
+ * Активность, отображающая список музыкальных композиций, доступных на устройстве.
+ * Приложение запрашивает разрешение на чтение аудиофайлов. Если разрешение предоставлено,
+ * загружаются информация о музыкальных композициях, и их список отображается в виде списка.
+ * Пользователь может выбрать композицию из списка, чтобы открыть экран для управления воспроизведением.
+ */
 public class ListMusicActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION = 99;
     ArrayList<Song> songArrayList;
     ListView lvSongs;
     SongsAdapter songsAdapter;
+
+    /**
+     * Метод, вызываемый при создании активности.
+     * Инициализирует представления, запрашивает разрешение, если оно не предоставлено,
+     * или загружает список музыкальных композиций, если разрешение уже предоставлено.
+     * Устанавливает слушатель для элементов списка, чтобы открыть MusicPlayer при выборе композиции.
+     *
+     * @param savedInstanceState Объект, содержащий данные о предыдущем состоянии активности.
+     */
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +60,14 @@ public class ListMusicActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Метод, вызываемый при получении ответа на запрос разрешения от пользователя.
+     * Если разрешение предоставлено, вызывает метод для загрузки музыкальных композиций.
+     *
+     * @param requestCode Код запроса разрешения.
+     * @param permissions Массив запрошенных разрешений.
+     * @param grantResults Результаты запроса разрешений.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -55,6 +78,10 @@ public class ListMusicActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Метод для загрузки информации о музыкальных композициях с устройства и отображения их в списке.
+     * Использует ContentResolver для получения данных из медиахранилища устройства.
+     */
     private void getSongs() {
         ContentResolver contentResolver = getContentResolver();
         Uri songUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -75,5 +102,4 @@ public class ListMusicActivity extends AppCompatActivity {
         }
         songsAdapter.notifyDataSetChanged();
     }
-
 }
