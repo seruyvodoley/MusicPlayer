@@ -1,0 +1,76 @@
+@startuml
+
+class ListMusicActivity {
+  - songArrayList: ArrayList<Song>
+  - lvSongs: ListView
+  - songsAdapter: SongsAdapter
+  ..other attributes and methods..
+
+  + onCreate(savedInstanceState: Bundle): void
+  + onRequestPermissionsResult(requestCode: int, permissions: String[], grantResults: int[]): void
+  + getSongs(): void
+  ..other public methods..
+}
+
+class Song {
+  - title: String
+  - artist: String
+  - path: String
+  ..getters and setters..
+}
+
+class SongsAdapter {
+  ..attributes..
+  + getView(position: int, convertView: View, parent: ViewGroup): View
+  ..other public methods..
+}
+
+class MainActivity {
+  - tvTime: TextView
+  - tvDuration: TextView
+  - tvTitle: TextView
+  - tvArtist: TextView
+  - seekBarTime: SeekBar
+  - seekBarVolume: SeekBar
+  - btnPlay: Button
+  - audioPlayer: AudioPlayer
+  ..other attributes and methods..
+
+  + onCreate(savedInstanceState: Bundle): void
+  + onClick(view: View): void
+  + onOptionsItemSelected(item: MenuItem): boolean
+  ..other public methods..
+}
+
+interface AudioPlayer {
+  + play(): void
+  + pause(): void
+  + stop(): void
+  + isPlaying(): boolean
+  + getCurrentPosition(): int
+  + getDuration(): int
+  + seekTo(position: int): void
+  + setVolume(leftVolume: float, rightVolume: float): void
+}
+
+class MediaPlayerWrapper {
+  - mediaPlayer: MediaPlayer
+  ..other attributes and methods..
+
+  + play(): void
+  + pause(): void
+  + stop(): void
+  + isPlaying(): boolean
+  + getCurrentPosition(): int
+  + getDuration(): int
+  + seekTo(position: int): void
+  + setVolume(leftVolume: float, rightVolume: float): void
+}
+
+ListMusicActivity --> Song
+ListMusicActivity --> SongsAdapter
+ListMusicActivity --> MainActivity
+MainActivity --> AudioPlayer
+MediaPlayerWrapper --> AudioPlayer
+
+@enduml
