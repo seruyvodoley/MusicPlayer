@@ -23,7 +23,7 @@ import android.Manifest;
  * загружаются информация о музыкальных композициях, и их список отображается в виде списка.
  * Пользователь может выбрать композицию из списка, чтобы открыть экран для управления воспроизведением.
  */
-public class ListMusicActivity extends AppCompatActivity {
+public class  ListMusicActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSION = 99;
     ArrayList<Song> songArrayList;
     ListView lvSongs;
@@ -47,11 +47,21 @@ public class ListMusicActivity extends AppCompatActivity {
         this.songsAdapter = new SongsAdapter(this, songArrayList);
 
         lvSongs.setAdapter(songsAdapter);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_AUDIO}, REQUEST_PERMISSION);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+            } else {
+                getSongs();
+            }
         } else {
-            getSongs();
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_AUDIO}, REQUEST_PERMISSION);
+            } else {
+                getSongs();
+            }
         }
+
         lvSongs.setOnItemClickListener((parent, view, position, id) -> {
             Song song = songArrayList.get(position);
             Intent openMusicPlayer = new Intent(ListMusicActivity.this, MainActivity.class);
